@@ -283,6 +283,15 @@ class owa_baseModule extends owa_module {
 	function registerMetrics() {		
 		
 		$this->registerMetric(
+			'visitDurationTotal', 
+			'base.visitDurationTotal',
+			'',
+			'Visit Duration Total',
+			'The total duration of visits.',
+			'Site Usage'
+		);
+
+		$this->registerMetric(
 			'pageViews', 
 			array( 
 				'base.pageViews',
