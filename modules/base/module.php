@@ -292,6 +292,15 @@ class owa_baseModule extends owa_module {
 		);
 
 		$this->registerMetric(
+			'timestamp', 
+			'base.timestamp',
+			'',
+			'Timestamp',
+			'Timestamp',
+			'Timestamp'
+		);
+
+		$this->registerMetric(
 			'pageViews', 
 			array( 
 				'base.pageViews',
