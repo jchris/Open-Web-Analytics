@@ -579,7 +579,7 @@
 				'log_dom_clicks'					=> true,
 				'delay_first_hit'					=> false,
 				'async_db'							=> false,
-				'clean_query_string'				=> true,
+				'clean_query_string'				=> false,
 				'fetch_refering_page_info'			=> true,
 				'query_string_filters'				=> '', // move to site settings
 				'async_log_dir'						=> '', //OWA_DATA_DIR . 'logs/',
