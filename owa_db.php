@@ -856,7 +856,8 @@ class owa_db extends owa_base {
 	}
 	
 	function _query() {
-		
+		error_log(sprintf('Q: %s', json_encode($this->_sqlParams)), 0);
+    		
 		switch($this->_sqlParams['query_type']) {
 		
 			case 'insert':
@@ -886,6 +887,9 @@ class owa_db extends owa_base {
 		$this->_last_sql_statement = $this->_sql_statement;
 		$this->_sql_statement = '';
 		$this->_sqlParams = array();
+
+		error_log(sprintf('R: %s', json_encode($ret)), 0);
+		
 		return $ret;
 		
 	}
