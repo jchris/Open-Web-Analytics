@@ -151,10 +151,10 @@ class owa_db_couchbase extends owa_db {
         // error_log($a, 0);
   	  }
   	} else {
-  	  error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
-  		  $this->connection->set(null, json_encode($this->_sqlParams));
-        // $a = $this->connection->get($doc['id']);
-        // error_log($a, 0);
+  	  if (array_key_exists('query_type', $this->_sqlParams)) {
+    	  error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
+    		  $this->connection->set(sprintf('%d',rand()), json_encode($this->_sqlParams));	    
+	    }
   	}
 	  
     // 
