@@ -91,28 +91,12 @@ class owa_db_couchbase extends owa_db {
 	function connect() {
 	
 		if (!$this->connection) {
-		
-        // todo connect to couchbase
-			if ($this->getConnectionParam('persistant')) {
+		  $this->connection = new Couchbase("127.0.0.1:8091", "Administrator", "animal", "gamesim-sample");
 
-        // $this->connection = mysql_pconnect(
-        //  $this->getConnectionParam('host'),
-        //  $this->getConnectionParam('user'),
-        //  $this->getConnectionParam('password'),
-        //  $this->getConnectionParam('open_new_connection')
-        //          );
-	    		
-			} else {
-				
         // todo connect to couchbase
-        // $this->connection = mysql_connect(
-        //  $this->getConnectionParam('host'),
-        //  $this->getConnectionParam('user'),
-        //  $this->getConnectionParam('password'),
-        //  $this->getConnectionParam('open_new_connection')
-        //          );
-			}
+
       // TODO get bucket
+            $this->database_selection = true;
       // $this->database_selection = mysql_select_db($this->getConnectionParam('name'), $this->connection);
 			
       // if (function_exists('mysql_set_charset')) {
@@ -145,9 +129,7 @@ class owa_db_couchbase extends owa_db {
 	function query($sql) {
 		error_log(sprintf('Couchbase Q: %s', json_encode($this->_sqlParams)), 0);
 	  $doc = $this->makeDoc($this->_sqlParams);
-	  if ($doc):
-		  error_log(sprintf('JSON Doc: %s', json_encode($doc)), 0);
-	  endif;
+
 		
   		if ($this->connection_status == false):
   		owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
@@ -160,6 +142,21 @@ class owa_db_couchbase extends owa_db {
 		
 		$this->result = '';
 		$this->new_result = '';	
+		
+		if ($doc) {
+		  error_log(sprintf('JSON Doc: %s', json_encode($doc)), 0);
+  		if (array_key_exists('id', $doc)) {
+  		  $this->connection->set($doc['id'], json_encode($doc));
+        // $a = $this->connection->get($doc['id']);
+        // error_log($a, 0);
+  	  }
+  	} else {
+  	  error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
+  		  $this->connection->set(null, json_encode($this->_sqlParams));
+        // $a = $this->connection->get($doc['id']);
+        // error_log($a, 0);
+  	}
+	  
     // 
     // if (!empty($this->new_result)):
     //  mysql_free_result($this->new_result);
@@ -182,9 +179,14 @@ class owa_db_couchbase extends owa_db {
 	}
 	
 	function makeDoc($params) {
-	  $doc = '';
-	  foreach ($params['set_values'] as $param) {
-	    $doc[$param['name']] = $param['value'];
+	  $doc = array();
+	  if (array_key_exists('set_values', $params)) {
+	    foreach ($params['set_values'] as $param) {
+	      $doc[$param['name']] = $param['value'];
+	    }
+	    if (array_key_exists('table', $params)) {
+	      $doc['table'] = $params['table'];
+	    }
 	  }
 	  return $doc;
 	}
