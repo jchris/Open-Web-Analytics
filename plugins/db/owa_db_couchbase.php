@@ -159,18 +159,39 @@ class owa_db_couchbase extends owa_db {
 		}
 	}
 	
+	function getWhereField($where) {
+	  foreach ($where as $k => $v) {
+      return $v['name'];
+		}
+	}
+	
+	function getWhereValue($where) {
+	  foreach ($where as $k => $v) {
+      return $v['value'];
+		}
+	}
+	
 	function select() {
 	  $q = $this->_sqlParams;
-    error_log(sprintf('DB select JSON: %s', json_encode($q)), 0);
-    if (array_key_exists('where', $q) && array_key_exists('id', $q['where'])) {
-        // fetch by id from the "table"
-        $view = $this->connection->getView("owa", "table_and_id");
+    // error_log(sprintf('DB select JSON: %s', json_encode($q)), 0);
+    if (array_key_exists('where', $q)) {
+        // fetch by a single field and table
+        $view = $this->connection->getView("owa", "table_and_field");
         return $view->getResultByKey(array(
-            $this->getFromTable($q['from']), $q['where']['id']['value']
-          ), array("include_docs" => true));
+            $this->getFromTable($q['from']), 
+            $this->getWhereField($q['where']), 
+            $this->getWhereValue($q['where'])
+          ), array("include_docs" => true, "stale" => "false"));
+    } else {
+      // no where clause, get them all
+      $view = $this->connection->getView("owa", "table_and_field");
+      return $view->getResult(array(
+        "include_docs" => true, 
+        "stale" => "false",
+        "startkey" => array($this->getFromTable($q['from'])),
+        "endkey" => array($this->getFromTable($q['from']), array())
+      ));
     }
-    
-
 	}
 	
 	function update() {
@@ -217,6 +238,10 @@ class owa_db_couchbase extends owa_db {
 			case 'delete':
 				$result = $this->delete();
 				break;
+			default:
+        error_log(sprintf('Raw query: %s params %s', $sql, json_encode($this->_sqlParams)), 0);
+        $result = true;
+        break;
 		}
 
     // query log
