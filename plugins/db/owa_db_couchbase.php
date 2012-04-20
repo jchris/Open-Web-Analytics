@@ -127,7 +127,7 @@ class owa_db_couchbase extends owa_db {
 	 * 
 	 */
 	function query($sql) {
-		error_log(sprintf('Couchbase Q: %s', json_encode($this->_sqlParams)), 0);
+    // error_log(sprintf('Couchbase Q: %s', json_encode($this->_sqlParams)), 0);
 	  $doc = $this->makeDoc($this->_sqlParams);
 
 		
@@ -144,7 +144,7 @@ class owa_db_couchbase extends owa_db {
 		$this->new_result = '';	
 		
 		if ($doc) {
-		  error_log(sprintf('JSON Doc: %s', json_encode($doc)), 0);
+		  error_log(sprintf('DB JSON Doc: %s', json_encode($doc)), 0);
   		if (array_key_exists('id', $doc)) {
   		  $this->connection->set($doc['id'], json_encode($doc));
         // $a = $this->connection->get($doc['id']);
@@ -152,7 +152,7 @@ class owa_db_couchbase extends owa_db {
   	  }
   	} else {
   	  if (array_key_exists('query_type', $this->_sqlParams)) {
-    	  error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
+        // error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
     		  $this->connection->set(sprintf('%d',rand()), json_encode($this->_sqlParams));	    
 	    }
   	}
@@ -173,7 +173,7 @@ class owa_db_couchbase extends owa_db {
     // endif;     
     // owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
     // $this->new_result = $result;
-		error_log(sprintf('R: %s', json_encode($this->new_result)), 0);
+    // error_log(sprintf('R: %s', json_encode($this->new_result)), 0);
 		return $this->new_result;
 		
 	}
@@ -228,7 +228,7 @@ class owa_db_couchbase extends owa_db {
 	}
 	
 	/**
-	 * Fetch Single Row
+	 * Fetch Single Row **NOT USED**
 	 *
 	 * @param string $sql
 	 * @return array

@@ -856,7 +856,7 @@ class owa_db extends owa_base {
 	}
 	
 	function _query() {
-    // error_log(sprintf('Q: %s', json_encode($this->_sqlParams)), 0);
+    error_log(sprintf('DB Q: %s', json_encode($this->_sqlParams)), 0);
     		
 		switch($this->_sqlParams['query_type']) {
 		
@@ -888,7 +888,7 @@ class owa_db extends owa_base {
 		$this->_sql_statement = '';
 		$this->_sqlParams = array();
 
-    // error_log(sprintf('R: %s', json_encode($ret)), 0);
+    error_log(sprintf('DB R: %s', json_encode($ret)), 0);
 		
 		return $ret;
 		

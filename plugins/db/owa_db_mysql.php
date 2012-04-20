@@ -141,7 +141,8 @@ class owa_db_mysql extends owa_db {
 	 * 
 	 */
 	function query($sql) {
-  
+    // error_log(sprintf('MySQL Q: %s', json_encode($this->_sqlParams)), 0);
+	
   		if ($this->connection_status == false):
   		owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
   			$this->connect();
@@ -169,9 +170,7 @@ class owa_db_mysql extends owa_db {
 		endif;			
 		owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
 		$this->new_result = $result;
-		
 		return $this->new_result;
-		
 	}
 	
 	function close() {
@@ -198,8 +197,10 @@ class owa_db_mysql extends owa_db {
 		
 		while ( $row = @mysql_fetch_assoc($this->new_result) ) {
 			$this->result[$num_rows] = $row;
+      // error_log(sprintf('MySQL Row: %s', json_encode($row)), 0);
 			$num_rows++;
 		}
+		error_log(sprintf('DB $num_rows: %s', json_encode($num_rows)), 0);
 		
 		if ($this->result):
 					
@@ -222,7 +223,7 @@ class owa_db_mysql extends owa_db {
 		
 		//print_r($this->result);
 		$row = @mysql_fetch_assoc($this->new_result);
-		
+    // error_log(sprintf('MySQL Row: %s', json_encode($row)), 0);
 		return $row;
 	}
 	

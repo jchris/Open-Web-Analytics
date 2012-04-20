@@ -456,7 +456,7 @@ class owa_coreAPI {
 			if (defined('OWA_DB_TYPE')) {
 				owa_coreAPI::setupStorageEngine(OWA_DB_TYPE);
 			} else {
-				owa_coreAPI::setupStorageEngine('couchbase');
+				owa_coreAPI::setupStorageEngine('mysql');
 			}
 				
 		}
