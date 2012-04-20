@@ -75,6 +75,8 @@ define('OWA_DTD_CHARACTER_ENCODING_UTF8', 'utf8');
 define('OWA_DTD_TABLE_CHARACTER_ENCODING', 'CHARACTER SET = %s');
 
 
+require_once("couchbase/Couchbase.php");
+
 /**
  * MySQL Data Access Class
  * 
@@ -91,7 +93,12 @@ class owa_db_couchbase extends owa_db {
 	function connect() {
 	
 		if (!$this->connection) {
-		  $this->connection = new Couchbase("127.0.0.1:8091", "Administrator", "animal", "gamesim-sample");
+		  $cb = new Couchbase;
+      $cb->addCouchbaseServer("localhost", 11211, 8092);
+		  
+		  $this->connection = $cb;
+		  
+      // new Couchbase("127.0.0.1:8091", "Administrator", "animal", "default");
 
         // todo connect to couchbase
 
@@ -119,65 +126,6 @@ class owa_db_couchbase extends owa_db {
 	}
 	
 	
-	/**
-	 * Database Query
-	 *
-	 * @param 	string $sql
-	 * @access 	public
-	 * 
-	 */
-	function query($sql) {
-    // error_log(sprintf('Couchbase Q: %s', json_encode($this->_sqlParams)), 0);
-	  $doc = $this->makeDoc($this->_sqlParams);
-
-		
-  		if ($this->connection_status == false):
-  		owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
-  			$this->connect();
-  		owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
-  		endif;
-  
-  		owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
-		$this->e->debug(sprintf('Query: %s', $sql));
-		
-		$this->result = '';
-		$this->new_result = '';	
-		
-		if ($doc) {
-		  error_log(sprintf('DB JSON Doc: %s', json_encode($doc)), 0);
-  		if (array_key_exists('id', $doc)) {
-  		  $this->connection->set($doc['id'], json_encode($doc));
-        // $a = $this->connection->get($doc['id']);
-        // error_log($a, 0);
-  	  }
-  	} else {
-  	  if (array_key_exists('query_type', $this->_sqlParams)) {
-        // error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
-    		  $this->connection->set(sprintf('%d',rand()), json_encode($this->_sqlParams));	    
-	    }
-  	}
-	  
-    // 
-    // if (!empty($this->new_result)):
-    //  mysql_free_result($this->new_result);
-    // endif;
-    // owa_coreAPI::profile($this, __FUNCTION__, __LINE__, $sql);
-    // $result = @mysql_unbuffered_query($sql, $this->connection);
-    // owa_coreAPI::profile($this, __FUNCTION__, __LINE__);     
-    // // Log Errors
-    // if (mysql_errno($this->connection)):
-    //  $this->e->debug(sprintf('A MySQL error occured. Error: (%s) %s. Query: %s',
-    //  mysql_errno($this->connection),
-    //  htmlspecialchars(mysql_error($this->connection)),
-    //  $sql));
-    // endif;     
-    // owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
-    // $this->new_result = $result;
-    // error_log(sprintf('R: %s', json_encode($this->new_result)), 0);
-		return $this->new_result;
-		
-	}
-	
 	function makeDoc($params) {
 	  $doc = array();
 	  if (array_key_exists('set_values', $params)) {
@@ -188,8 +136,100 @@ class owa_db_couchbase extends owa_db {
 	      $doc['table'] = $params['table'];
 	    }
 	  }
+	  if (!array_key_exists('id', $doc)) {
+	    $doc['id'] = sprintf('%d',rand());
+	  }
 	  return $doc;
 	}
+	
+	/**
+	 * Couchbase DB calls
+	 * 
+	 */
+	
+	function insert() {
+    $doc = $this->makeDoc($this->_sqlParams);
+    error_log(sprintf('DB insert JSON: %s', json_encode($doc)), 0);
+	  return $this->connection->set($doc['id'], json_encode($doc));
+	} 
+	
+	function getFromTable($from) {
+	  foreach ($from as $k => $v) {
+      return $v['name'];
+		}
+	}
+	
+	function select() {
+	  $q = $this->_sqlParams;
+    error_log(sprintf('DB select JSON: %s', json_encode($q)), 0);
+    if (array_key_exists('where', $q) && array_key_exists('id', $q['where'])) {
+        // fetch by id from the "table"
+        $view = $this->connection->getView("owa", "table_and_id");
+        return $view->getResultByKey(array(
+            $this->getFromTable($q['from']), $q['where']['id']['value']
+          ), array("include_docs" => true));
+    }
+    
+
+	}
+	
+	function update() {
+    error_log(sprintf('DB update JSON: %s', json_encode($this->_sqlParams)), 0);
+    // $this->connection->set($doc['id'], json_encode($doc));
+	}
+	function delete() {
+    error_log(sprintf('DB delete JSON: %s', json_encode($this->_sqlParams)), 0);
+    // $this->connection->set($doc['id'], json_encode($doc));
+	}
+	
+	/**
+	 * Database Query
+	 *
+	 * @param 	string $sql
+	 * @access 	public
+	 * 
+	 */
+	function query($sql) {
+    // error_log(sprintf('Couchbase Q: %s', json_encode($this->_sqlParams)), 0);
+  	if ($this->connection_status == false):
+  	  owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
+  		$this->connect();
+		  owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
+  	endif;
+  
+  	owa_coreAPI::profile($this, __FUNCTION__, __LINE__);
+    // $this->e->debug(sprintf('Query: %s', $sql));
+		
+		$this->result = '';
+		$this->new_result = '';	
+		
+		
+		switch($this->_sqlParams['query_type']) {
+			case 'insert':
+				$result = $this->insert();
+				break;
+			case 'select':
+				$result = $this->select();
+				break;
+			case 'update':
+				$result = $this->update();
+				break;
+			case 'delete':
+				$result = $this->delete();
+				break;
+		}
+
+    // query log
+	  if (array_key_exists('query_type', $this->_sqlParams)) {
+      // error_log(sprintf('JSON Query: %s', json_encode($this->_sqlParams)), 0);
+  		  $this->connection->set(sprintf('%d',rand()), json_encode($this->_sqlParams));	    
+    }
+		
+    $this->new_result = $result;
+		return $this->new_result;
+		
+	}
+
 	
 	function close() {
 		
@@ -207,14 +247,13 @@ class owa_db_couchbase extends owa_db {
 	 */
 	function get_results($sql) {
 	
-		if ($sql):
-			$this->query($sql);
-		endif;
-	
+		$ret = $this->query($sql);
+    // error_log(sprintf('DB results: %s', json_encode($ret)), 0);
+
 		$num_rows = 0;
 		
-		while ( $row = @mysql_fetch_assoc($this->new_result) ) {
-			$this->result[$num_rows] = $row;
+		foreach($ret->rows AS $row) {
+			$this->result[$num_rows] = get_object_vars($row->doc);
 			$num_rows++;
 		}
 		

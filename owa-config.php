@@ -35,8 +35,10 @@
  *
  */
 
-// define('OWA_DB_TYPE', 'couchbase'); // options: mysql
-define('OWA_DB_TYPE', 'mysql'); // options: mysql
+// ini_set('memory_limit', '1024M');
+
+define('OWA_DB_TYPE', 'couchbase');
+// define('OWA_DB_TYPE', 'mysql'); // options: mysql
 define('OWA_DB_NAME', 'owa'); // name of the database
 define('OWA_DB_HOST', 'localhost'); // host name of the server housing the database
 define('OWA_DB_USER', 'root'); // database user
