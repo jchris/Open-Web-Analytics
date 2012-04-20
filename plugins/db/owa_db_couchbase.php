@@ -175,6 +175,7 @@ class owa_db_couchbase extends owa_db {
 	  $q = $this->_sqlParams;
     // error_log(sprintf('DB select JSON: %s', json_encode($q)), 0);
     if (array_key_exists('where', $q)) {
+      if (count($q['where']) == 1) {
         // fetch by a single field and table
         $view = $this->connection->getView("owa", "table_and_field");
         return $view->getResultByKey(array(
@@ -182,6 +183,10 @@ class owa_db_couchbase extends owa_db {
             $this->getWhereField($q['where']), 
             $this->getWhereValue($q['where'])
           ), array("include_docs" => true, "stale" => "false"));
+      } else {
+        error_log(sprintf('Complex select: %s', json_encode($this->_sqlParams)), 0);
+        return null;
+      }
     } else {
       // no where clause, get them all
       $view = $this->connection->getView("owa", "table_and_field");
