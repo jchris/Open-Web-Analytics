@@ -152,7 +152,8 @@ class owa_db_couchbase extends owa_db {
     error_log(sprintf('DB insert JSON: %s', json_encode($doc)), 0);
 	  return $this->connection->set($doc['id'], json_encode($doc));
 	} 
-	
+
+  // only works on From and Where objects with 1 member
 	function getFromTable($from) {
 	  foreach ($from as $k => $v) {
       return $v['name'];
@@ -171,13 +172,72 @@ class owa_db_couchbase extends owa_db {
 		}
 	}
 	
+	function betweenRange($where) {
+	  foreach ($where as $k => $v) {
+	    if ($v['operator'] == 'BETWEEN') {
+        return $v['value']; 
+	    }
+		}
+	}
+	
+	function getTopURLDocsForSiteAndDay($site_id, $day)  {
+	  $view = $this->connection->getView("owa", "yyyymmdd");
+	  $yyyymmdd = $day;
+    return $view->getResult(array(
+      "group" => true,
+      "startkey" => array($site_id, $yyyymmdd),
+      "endkey" => array($site_id, $yyyymmdd, array())));
+	}
+	
+	function daysOfRange($range) {
+	  $days = array();
+	  $now = $range["start"];
+	  while ($now <= $range["end"]) {
+	    $days[] = ''.$now;
+	    $now++;
+	  }
+    return $days;
+	}
+	
+	function getSiteId($where) {	  
+    error_log(sprintf('getSiteId: %s', json_encode($where)), 0);
+	  foreach ($where as $k => $v) {
+	    if (strpos($k,"site_id") !== false) {
+        return $v['value'];	      
+	    }
+		}
+	}
+	
+	function topKURLsForDateRange($k, $range) {
+	  // if ($this->length_in_days($range) > 62) {
+    //   // use the month view to pull in the middle month
+    // }
+	  $q = $this->_sqlParams;
+    $site_id = $this->getSiteId($q["where"]);
+	  
+	  $result = array();
+    foreach($this->daysOfRange($range) AS $day) {
+      $view = $this->getTopURLDocsForSiteAndDay($site_id, $day);
+      error_log(sprintf('getTopURLDocsForSiteAndDay: %s', json_encode(array($site_id, $day, $result))), 0);
+      foreach($view->rows as $row) {
+  			$result[] = $row;
+      };
+		}
+    return $result;// add them up to get the top K
+    // look up the descriptions (including actual url) to do final count
+	}
+	
 	function document_via_document_id($me)  {
 	  $q = $this->_sqlParams;
     error_log(sprintf('document_via_document_id: %s', json_encode($q)), 0);
     // we want the requests sliced by foo, and then the documents those requests are requests for.
-    
-    
-    
+    $range = $this->betweenRange($q['where']);
+    if ($range) {
+      error_log(sprintf('document_via_document_id range: %s', json_encode($range)), 0);
+
+      // for each day in range, get top-k urls in terms of # of hits
+      return $this->topKURLsForDateRange(10, $range);
+    }
     return array("hi");
 	}
 	
@@ -301,16 +361,27 @@ class owa_db_couchbase extends owa_db {
 
 		$num_rows = 0;
 		
+		
+		
 		if ($ret) {
-  		foreach($ret->rows AS $row) {
-  			$this->result[$num_rows] = get_object_vars($row->doc);
-  			$num_rows++;
-  		}		  
+		  if (is_array($ret)) {
+        // ok
+		  } else {
+        $ret = $ret->rows;
+		  }
 		}
-
+		
+		foreach($ret AS $row) {
+		  $doc = $row->doc;
+		  if ($doc) {
+  		  $this->result[$num_rows] = get_object_vars($doc);		    
+		  } else {
+  		  $this->result[$num_rows] = get_object_vars($row);		    
+		  }
+		  $num_rows++;
+	  }
 		
 		if ($this->result):
-					
 			return $this->result;
 			
 		else:
