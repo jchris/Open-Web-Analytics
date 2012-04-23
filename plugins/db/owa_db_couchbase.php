@@ -171,10 +171,28 @@ class owa_db_couchbase extends owa_db {
 		}
 	}
 	
+	function document_via_document_id($me)  {
+	  $q = $this->_sqlParams;
+    error_log(sprintf('document_via_document_id: %s', json_encode($q)), 0);
+    // we want the requests sliced by foo, and then the documents those requests are requests for.
+    
+    
+    
+    return array("hi");
+	}
+	
 	function select() {
 	  $q = $this->_sqlParams;
     // error_log(sprintf('DB select JSON: %s', json_encode($q)), 0);
-    if (array_key_exists('where', $q)) {
+    if (array_key_exists('joins', $q)) {
+      $joins = $q['joins'];
+      error_log(sprintf('joins: %s', json_encode($joins)), 0);
+      if (array_key_exists('document_via_document_id', $joins)) {
+        return $this->document_via_document_id($joins['document_via_document_id']);
+      } else {
+        return null;
+      }
+    } else if (array_key_exists('where', $q)) {
       if (count($q['where']) == 1) {
         // fetch by a single field and table
         $view = $this->connection->getView("owa", "table_and_field");
@@ -185,6 +203,7 @@ class owa_db_couchbase extends owa_db {
           ), array("include_docs" => true, "stale" => "false"));
       } else {
         error_log(sprintf('Complex select: %s', json_encode($this->_sqlParams)), 0);
+
         return null;
       }
     } else {
@@ -278,14 +297,17 @@ class owa_db_couchbase extends owa_db {
 	function get_results($sql) {
 	
 		$ret = $this->query($sql);
-    // error_log(sprintf('DB results: %s', json_encode($ret)), 0);
+    error_log(sprintf('DB $ret: %s', json_encode($ret)), 0);
 
 		$num_rows = 0;
 		
-		foreach($ret->rows AS $row) {
-			$this->result[$num_rows] = get_object_vars($row->doc);
-			$num_rows++;
+		if ($ret) {
+  		foreach($ret->rows AS $row) {
+  			$this->result[$num_rows] = get_object_vars($row->doc);
+  			$num_rows++;
+  		}		  
 		}
+
 		
 		if ($this->result):
 					
