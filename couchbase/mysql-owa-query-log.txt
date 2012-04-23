@@ -310,7 +310,22 @@ VISIT DASHBOARD
 [20-Apr-2012 10:08:53] DB Q: {"joins":{"document_via_document_id":{"type":"JOIN","table":"owa_document","as":"document_via_document_id","foreign_key":"request.document_id","primary_key":"document_via_document_id.id"}},"where":{"request.yyyymmdd":{"name":"request.yyyymmdd","value":{"start":"20120413","end":"20120420"},"operator":"BETWEEN"},"request.site_id":{"name":"request.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"select_values":[{"name":"count(distinct request.id)","as":"pageViews"}],"query_type":"select","from":{"owa_request":{"name":"owa_request","as":"request"}},"limit":1}
 [20-Apr-2012 10:08:53] DB $num_rows: 1
 [20-Apr-2012 10:08:53] DB R: [{"pageViews":"1"}]
+
+// give the top 100 most popular URLs by request count and requires same title
+// date range between start and end on field query.where["request.yyyymmdd"].name == "request.yyyymmdd", it's sibling value, thanks php. using makeDoc to clean it up
+
 [20-Apr-2012 10:08:53] DB Q: {"joins":{"document_via_document_id":{"type":"JOIN","table":"owa_document","as":"document_via_document_id","foreign_key":"request.document_id","primary_key":"document_via_document_id.id"}},"select_values":[{"name":"document_via_document_id.page_title","as":"pageTitle"},{"name":"document_via_document_id.url","as":"pageUrl"},{"name":"count(distinct request.id)","as":"pageViews"}],"groupby":["document_via_document_id.page_title","document_via_document_id.url"],"query_type":"select","from":{"owa_request":{"name":"owa_request","as":"request"}},"where":{"request.yyyymmdd":{"name":"request.yyyymmdd","value":{"start":"20120413","end":"20120420"},"operator":"BETWEEN"},"request.site_id":{"name":"request.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"orderby":[["pageViews","DESC"]],"limit":100,"offset":0}
+
+// use group level to count requests by [week, url, title], 
+// also by [day, url, title]
+// and to see history of individual urls do [url, year, month, day, h] views over your data.
+// or history of all urls [year, month, day, h]
+// 
+
+
+
+// and we get back the one result because we only have one page for now
+
 [20-Apr-2012 10:08:53] DB $num_rows: 1
 [20-Apr-2012 10:08:53] DB R: [{"pageTitle":"Syncpoint Admin Console","pageUrl":"http:\/\/localhost:5984\/sp_admin\/_design\/console\/index.html","pageViews":"1"}]
 [20-Apr-2012 10:08:53] DB Q: {"joins":{"referer_via_":{"type":"JOIN","table":"owa_referer","as":"referer_via_","foreign_key":"session.referer_id","primary_key":"referer_via_.id"}},"where":{"session.yyyymmdd":{"name":"session.yyyymmdd","value":{"start":"20120413","end":"20120420"},"operator":"BETWEEN"},"session.medium":{"name":"session.medium","value":"referral","operator":"=="},"session.site_id":{"name":"session.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"select_values":[{"name":"count(distinct session.id)","as":"visits"}],"query_type":"select","from":{"owa_session":{"name":"owa_session","as":"session"}},"limit":1}
