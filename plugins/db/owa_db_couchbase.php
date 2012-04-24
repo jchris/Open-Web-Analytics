@@ -231,9 +231,9 @@ class owa_db_couchbase extends owa_db {
 		usort($result, create_function('$a,$b','return $b["value"] - $a["value"];'));
 		$real = array();
     while (list($key, $value) = each($result)) {
-      error_log("\$result[$key]: " . json_encode($value));
+      // error_log(json_encode($value));
       $doc = json_decode($this->connection->get($value["name"]), true);
-      error_log(sprintf('doc: %s', json_encode($doc)), 0);
+      // error_log(sprintf('doc: %s', json_encode($doc)), 0);
       $real[] = array(
         // "key" => $value["name"],
         "pageViews" => $value["value"],
@@ -265,6 +265,18 @@ class owa_db_couchbase extends owa_db {
     return array("hi");
 	}
 	
+	
+	function pageViewsForSiteInRange($q) {
+	  $site_id = $this->getSiteId($q["where"]);
+    $range = $this->betweenRange($q['where']);
+    if ($range) {
+      error_log(sprintf('document_via_document_id range: %s', json_encode($range)), 0);
+
+      // for each day in range, get top-k urls in terms of # of hits
+      return $this->topKURLsForDateRange(10, $range);
+    }
+	}
+	
 	function select() {
 	  $q = $this->_sqlParams;
     // error_log(sprintf('DB select JSON: %s', json_encode($q)), 0);
@@ -287,8 +299,7 @@ class owa_db_couchbase extends owa_db {
           ), array("include_docs" => true, "stale" => "false"));
       } else {
         error_log(sprintf('Complex select: %s', json_encode($this->_sqlParams)), 0);
-
-        return null;
+        return $this->pageViewsForSiteInRange($q);
       }
     } else {
       // no where clause, get them all
@@ -393,8 +404,10 @@ class owa_db_couchbase extends owa_db {
 		  } else {
         $ret = $ret->rows;
 		  }
+		} else {
+		  $ret = array();
 		}
-		
+    error_log(sprintf('DB foreach: %s', json_encode($ret)), 0);
 		foreach($ret AS $row) {
 		  if (is_array($row)) {
   		  $this->result[$num_rows] = $row;		    

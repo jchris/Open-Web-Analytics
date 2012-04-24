@@ -1,3 +1,69 @@
+
+{
+    "select_values":
+    [
+        {
+            "name":"request.yyyymmdd",
+            "as":"date"
+        },
+        {
+            "name":"count(distinct request.id)",
+            "as":"pageViews"
+        },
+        {
+            "name":"count(distinct request.session_id)",
+            "as":"visits"
+        },
+        {
+            "name":"count(distinct request.document_id)",
+            "as":"uniquePageViews"
+        }
+    ],
+    "groupby":
+    [
+        "request.yyyymmdd"
+    ],
+    "query_type":"select",
+    "from":
+    {
+        "owa_request":
+        {
+            "name":"owa_request",
+            "as":"request"
+        }
+    },
+    "where":
+    {
+        "request.yyyymmdd":
+        {
+            "name":"request.yyyymmdd",
+            "value":
+            {
+                "start":"20120416",
+                "end":"20120423"
+            },
+            "operator":"BETWEEN"
+        },
+        "request.site_id":
+        {
+            "name":"request.site_id",
+            "value":"6030119dcc3a9cd96be0bb7ebfa2b8ab",
+            "operator":"="
+        }
+    },
+    "orderby":
+    [
+        [
+            "date",
+            "ASC"
+        ]
+    ],
+    "offset":0
+}
+
+
+
+
 [20-Apr-2012 15:13:22] DB Q: {
   "from": {
     "owa_request": {
