@@ -218,12 +218,36 @@ class owa_db_couchbase extends owa_db {
 	  $result = array();
     foreach($this->daysOfRange($range) AS $day) {
       $view = $this->getTopURLDocsForSiteAndDay($site_id, $day);
-      error_log(sprintf('getTopURLDocsForSiteAndDay: %s', json_encode(array($site_id, $day, $result))), 0);
       foreach($view->rows as $row) {
-  			$result[] = $row;
+        error_log(sprintf('$row: %s $row->key[2] %s', json_encode($row), json_encode($row->key[2])), 0);
+        if (!array_key_exists($row->key[2], $result)) {
+          $result[$row->key[2]] = array("name" => $row->key[2], "value" => 0);
+        }
+        // sum reduce
+  			$result[$row->key[2]]["value"] = $result[$row->key[2]]["value"] + $row->value;
       };
 		}
-    return $result;// add them up to get the top K
+
+		usort($result, create_function('$a,$b','return $b["value"] - $a["value"];'));
+		$real = array();
+    while (list($key, $value) = each($result)) {
+      error_log("\$result[$key]: " . json_encode($value));
+      $doc = json_decode($this->connection->get($value["name"]), true);
+      error_log(sprintf('doc: %s', json_encode($doc)), 0);
+      $real[] = array(
+        // "key" => $value["name"],
+        "pageViews" => $value["value"],
+        "pageTitle" => $doc["page_title"],
+        "pageURL" => $doc["url"]
+        // "doc" => $doc
+      );
+    }
+		
+    error_log(sprintf('getTopURLDocsForSiteAndDay: %s', json_encode(array($site_id, $range, $real))), 0);
+
+    
+
+    return $real;// add them up to get the top K
     // look up the descriptions (including actual url) to do final count
 	}
 	
@@ -372,11 +396,12 @@ class owa_db_couchbase extends owa_db {
 		}
 		
 		foreach($ret AS $row) {
-		  $doc = $row->doc;
-		  if ($doc) {
-  		  $this->result[$num_rows] = get_object_vars($doc);		    
-		  } else {
-  		  $this->result[$num_rows] = get_object_vars($row);		    
+		  if (is_array($row)) {
+  		  $this->result[$num_rows] = $row;		    
+		  } else if ($row->doc) {
+  		  $this->result[$num_rows] = get_object_vars($row->doc);		    
+		  } else if ($row->value) {
+  		  $this->result[$num_rows] = get_object_vars($row->value);		    
 		  }
 		  $num_rows++;
 	  }
