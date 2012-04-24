@@ -413,3 +413,64 @@ function(doc) {
 
 
 
+
+// MORE MYSQL
+
+
+ Marker - Apr 23, 2012 9:32:07 PM
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_configuration":{"name":"owa_configuration","as":""}},"select_values":[{"name":"*","as":""}],"where":{"id":{"name":"id","value":"1","operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"1","settings":"a:1:{s:4:\"base\";a:3:{s:14:\"schema_version\";i:8;s:9:\"is_active\";b:1;s:16:\"install_complete\";b:1;}}"}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_site":{"name":"owa_site","as":""}},"select_values":[{"name":"*","as":""}],"where":{"id":{"name":"id","value":2789101515,"operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"2789101515","site_id":"6030119dcc3a9cd96be0bb7ebfa2b8ab","domain":"http:\/\/localhost:5984","name":"http:\/\/localhost:5984","description":"","site_family":"","settings":""}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_user":{"name":"owa_user","as":""}},"select_values":[{"name":"*","as":""}],"where":{"user_id":{"name":"user_id","value":"admin","operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"1","user_id":"admin","password":"c63526821e73a8dc412566be9968bcd3","role":"admin","real_name":"","email_address":"root","temp_passkey":"dd8918119e5cb5d636a5a7745deae341","creation_date":"1334941453","last_update_date":"1334941453","api_key":"cc6f14d86f5ac7759faff25acc5db7f9"}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_site_user":{"name":"owa_site_user","as":""}},"select_values":[{"name":"*","as":""}],"where":{"user_id":{"name":"user_id","value":"1","operator":"="}}}
+[23-Apr-2012 21:32:16] DB $num_rows: 0
+[23-Apr-2012 21:32:16] DB R: null
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_site":{"name":"owa_site","as":""}},"select_values":[{"name":"*","as":""}]}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"2789101515","site_id":"6030119dcc3a9cd96be0bb7ebfa2b8ab","domain":"http:\/\/localhost:5984","name":"http:\/\/localhost:5984","description":"","site_family":"","settings":""}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_configuration":{"name":"owa_configuration","as":""}},"select_values":[{"name":"*","as":""}],"where":{"id":{"name":"id","value":"1","operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"1","settings":"a:1:{s:4:\"base\";a:3:{s:14:\"schema_version\";i:8;s:9:\"is_active\";b:1;s:16:\"install_complete\";b:1;}}"}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_configuration":{"name":"owa_configuration","as":""}},"select_values":[{"name":"*","as":""}],"where":{"id":{"name":"id","value":"1","operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"1","settings":"a:1:{s:4:\"base\";a:3:{s:14:\"schema_version\";i:8;s:9:\"is_active\";b:1;s:16:\"install_complete\";b:1;}}"}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_site":{"name":"owa_site","as":""}},"select_values":[{"name":"*","as":""}],"where":{"id":{"name":"id","value":2789101515,"operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"2789101515","site_id":"6030119dcc3a9cd96be0bb7ebfa2b8ab","domain":"http:\/\/localhost:5984","name":"http:\/\/localhost:5984","description":"","site_family":"","settings":""}]
+[23-Apr-2012 21:32:16] DB Q: {"query_type":"select","from":{"owa_site":{"name":"owa_site","as":""}},"select_values":[{"name":"*","as":""}],"where":{"id":{"name":"id","value":2789101515,"operator":"="}},"limit":1}
+[23-Apr-2012 21:32:16] DB $num_rows: 1
+[23-Apr-2012 21:32:16] DB R: [{"id":"2789101515","site_id":"6030119dcc3a9cd96be0bb7ebfa2b8ab","domain":"http:\/\/localhost:5984","name":"http:\/\/localhost:5984","description":"","site_family":"","settings":""}]
+[23-Apr-2012 21:32:17] DB Q: {"query_type":"select","from":{"owa_user":{"name":"owa_user","as":""}},"select_values":[{"name":"*","as":""}],"where":{"user_id":{"name":"user_id","value":"admin","operator":"="}},"limit":1}
+[23-Apr-2012 21:32:17] DB $num_rows: 1
+[23-Apr-2012 21:32:17] DB R: [{"id":"1","user_id":"admin","password":"c63526821e73a8dc412566be9968bcd3","role":"admin","real_name":"","email_address":"root","temp_passkey":"dd8918119e5cb5d636a5a7745deae341","creation_date":"1334941453","last_update_date":"1334941453","api_key":"cc6f14d86f5ac7759faff25acc5db7f9"}]
+[23-Apr-2012 21:32:17] DB Q: {"query_type":"select","from":{"owa_site_user":{"name":"owa_site_user","as":""}},"select_values":[{"name":"*","as":""}],"where":{"user_id":{"name":"user_id","value":"1","operator":"="}}}
+[23-Apr-2012 21:32:17] DB $num_rows: 0
+[23-Apr-2012 21:32:17] DB R: null
+[23-Apr-2012 21:32:17] DB Q: {"query_type":"select","from":{"owa_user":{"name":"owa_user","as":""}},"select_values":[{"name":"*","as":""}],"where":{"user_id":{"name":"user_id","value":"admin","operator":"="}},"limit":1}
+[23-Apr-2012 21:32:17] DB Q: {"joins":{"document_via_document_id":{"type":"JOIN","table":"owa_document","as":"document_via_document_id","foreign_key":"request.document_id","primary_key":"document_via_document_id.id"}},"where":{"request.yyyymmdd":{"name":"request.yyyymmdd","value":{"start":"20120416","end":"20120423"},"operator":"BETWEEN"},"request.site_id":{"name":"request.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"select_values":[{"name":"count(distinct request.id)","as":"pageViews"},{"name":"count(distinct request.session_id)","as":"visits"},{"name":"count(distinct request.document_id)","as":"uniquePageViews"}],"query_type":"select","from":{"owa_request":{"name":"owa_request","as":"request"}},"limit":1}
+[23-Apr-2012 21:32:17] DB $num_rows: 1
+[23-Apr-2012 21:32:17] DB R: [{"pageViews":"1","visits":"1","uniquePageViews":"1"}]
+[23-Apr-2012 21:32:17] DB Q: {"joins":{"document_via_document_id":{"type":"JOIN","table":"owa_document","as":"document_via_document_id","foreign_key":"request.document_id","primary_key":"document_via_document_id.id"}},"select_values":[{"name":"document_via_document_id.uri","as":"pagePath"},{"name":"document_via_document_id.page_title","as":"pageTitle"},{"name":"document_via_document_id.page_type","as":"pageType"},{"name":"document_via_document_id.url","as":"pageUrl"},{"name":"count(distinct request.id)","as":"pageViews"},{"name":"count(distinct request.session_id)","as":"visits"},{"name":"count(distinct request.document_id)","as":"uniquePageViews"}],"groupby":["document_via_document_id.uri","document_via_document_id.page_title","document_via_document_id.page_type","document_via_document_id.url"],"query_type":"select","from":{"owa_request":{"name":"owa_request","as":"request"}},"where":{"request.yyyymmdd":{"name":"request.yyyymmdd","value":{"start":"20120416","end":"20120423"},"operator":"BETWEEN"},"request.site_id":{"name":"request.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"orderby":[["pageViews","DESC"]],"limit":300,"offset":0}
+[23-Apr-2012 21:32:17] DB $num_rows: 1
+[23-Apr-2012 21:32:17] DB R: [{"pagePath":"\/sp_admin\/_design\/console\/index.html","pageTitle":"Syncpoint Admin Console","pageType":"(not set)","pageUrl":"http:\/\/localhost:5984\/sp_admin\/_design\/console\/index.html","pageViews":"1","visits":"1","uniquePageViews":"1"}]
+[23-Apr-2012 21:32:17] DB $num_rows: 1
+[23-Apr-2012 21:32:17] DB R: [{"id":"1","user_id":"admin","password":"c63526821e73a8dc412566be9968bcd3","role":"admin","real_name":"","email_address":"root","temp_passkey":"dd8918119e5cb5d636a5a7745deae341","creation_date":"1334941453","last_update_date":"1334941453","api_key":"cc6f14d86f5ac7759faff25acc5db7f9"}]
+[23-Apr-2012 21:32:17] DB Q: {"query_type":"select","from":{"owa_site_user":{"name":"owa_site_user","as":""}},"select_values":[{"name":"*","as":""}],"where":{"user_id":{"name":"user_id","value":"1","operator":"="}}}
+[23-Apr-2012 21:32:17] DB $num_rows: 0
+[23-Apr-2012 21:32:17] DB R: null
+[23-Apr-2012 21:32:17] DB Q: {"where":{"request.yyyymmdd":{"name":"request.yyyymmdd","value":{"start":"20120416","end":"20120423"},"operator":"BETWEEN"},"request.site_id":{"name":"request.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"select_values":[{"name":"count(distinct request.id)","as":"pageViews"},{"name":"count(distinct request.session_id)","as":"visits"},{"name":"count(distinct request.document_id)","as":"uniquePageViews"}],"query_type":"select","from":{"owa_request":{"name":"owa_request","as":"request"}},"limit":1}
+[23-Apr-2012 21:32:17] DB $num_rows: 1
+[23-Apr-2012 21:32:17] DB R: [{"pageViews":"1","visits":"1","uniquePageViews":"1"}]
+[23-Apr-2012 21:32:17] DB Q: {"select_values":[{"name":"request.yyyymmdd","as":"date"},{"name":"count(distinct request.id)","as":"pageViews"},{"name":"count(distinct request.session_id)","as":"visits"},{"name":"count(distinct request.document_id)","as":"uniquePageViews"}],"groupby":["request.yyyymmdd"],"query_type":"select","from":{"owa_request":{"name":"owa_request","as":"request"}},"where":{"request.yyyymmdd":{"name":"request.yyyymmdd","value":{"start":"20120416","end":"20120423"},"operator":"BETWEEN"},"request.site_id":{"name":"request.site_id","value":"6030119dcc3a9cd96be0bb7ebfa2b8ab","operator":"="}},"orderby":[["date","ASC"]],"offset":0}
+[23-Apr-2012 21:32:17] DB $num_rows: 1
+[23-Apr-2012 21:32:17] DB R: [{"date":"20120420","pageViews":"1","visits":"1","uniquePageViews":"1"}]
+
+
+
+
+

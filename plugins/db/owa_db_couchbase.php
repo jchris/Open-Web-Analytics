@@ -238,7 +238,11 @@ class owa_db_couchbase extends owa_db {
         // "key" => $value["name"],
         "pageViews" => $value["value"],
         "pageTitle" => $doc["page_title"],
-        "pageURL" => $doc["url"]
+        "pageType" => $doc["page_type"],
+        "pageURL" => $doc["url"],
+        "visits" => $value["value"],
+        "uniquePageViews" => $value["value"],
+        "pagePath" => $doc["uri"]
         // "doc" => $doc
       );
     }
